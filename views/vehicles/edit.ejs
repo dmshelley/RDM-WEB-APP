@@ -1,0 +1,184 @@
+<div class="container-fluid p-0">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <a href="/vehicles/<%= vehicle.id %>" class="text-decoration-none text-muted small fw-semibold hover-primary"><i class="fa-solid fa-arrow-left me-1"></i> Back to Vehicle Profile</a>
+            <h2 class="fw-bold mt-2">Edit Vehicle Details</h2>
+        </div>
+    </div>
+
+    <% if (error) { %>
+        <div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation me-2"></i> <%= error %></div>
+    <% } %>
+
+    <div class="card shadow-sm border-0 rounded-4 bg-transparent">
+        <div class="card-body p-0">
+            <form action="/vehicles/<%= vehicle.id %>/edit" method="POST" id="editVehicleForm">
+                
+                <div class="form-well">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-car me-2"></i>Vehicle Identification</h6>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="number" class="form-control fw-bold" id="year" name="year" placeholder="Year" value="<%= vehicle.year %>" required min="1900" max="2030">
+                                <label for="year">Year <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="productionDate" name="productionDate" placeholder="MM/YY" value="<%= vehicle.productionDate || '' %>">
+                                <label for="productionDate">Build Date (MM/YY)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control fw-bold text-uppercase" id="make" name="make" placeholder="Make" value="<%= vehicle.make %>" required>
+                                <label for="make">Make <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control fw-bold text-uppercase" id="model" name="model" placeholder="Model" value="<%= vehicle.model %>" required>
+                                <label for="model">Model <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mt-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control text-uppercase" id="trim" name="trim" placeholder="Trim" value="<%= vehicle.trim || '' %>">
+                                <label for="trim">Trim Level (e.g. LTZ)</label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mt-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-hashtag text-muted"></i></span>
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control border-start-0 ps-0 text-uppercase" id="licensePlate" name="licensePlate" placeholder="License Plate" value="<%= vehicle.licensePlate || '' %>">
+                                    <label for="licensePlate">License Plate</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-truck-fleet text-muted"></i></span>
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control border-start-0 ps-0 text-uppercase fw-bold text-primary" id="unitNumber" name="unitNumber" placeholder="Unit #" value="<%= vehicle.unitNumber || '' %>">
+                                    <label for="unitNumber">Fleet Unit #</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-palette text-muted"></i></span>
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control border-start-0 ps-0" id="color" name="color" placeholder="Color" value="<%= vehicle.color || '' %>">
+                                    <label for="color">Exterior Color</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-well">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-gears me-2"></i>Mechanical Specifications</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control fw-bold text-danger" id="mileage" name="mileage" placeholder="Mileage" value="<%= vehicle.mileage || '' %>" required>
+                                    <label for="mileage">Current Mileage <span class="text-danger">*</span></label>
+                                </div>
+                                <span class="input-group-text bg-light text-muted">km</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="engineSize" name="engineSize" placeholder="Engine Size" value="<%= vehicle.engineSize || '' %>">
+                                <label for="engineSize">Engine Size</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="transmission" name="transmission" placeholder="Transmission" value="<%= vehicle.transmission || '' %>">
+                                <label for="transmission">Transmission</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="drivetrain" name="drivetrain" placeholder="Drivetrain" value="<%= vehicle.drivetrain || '' %>">
+                                <label for="drivetrain">Drivetrain</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="fuelType" name="fuelType" placeholder="Fuel Type" value="<%= vehicle.fuelType || '' %>">
+                                <label for="fuelType">Fuel Type</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="bodyStyle" name="bodyStyle" placeholder="Body Style" value="<%= vehicle.bodyStyle || '' %>">
+                                <label for="bodyStyle">Body Style</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="weightClass" name="weightClass" placeholder="GVWR / Weight Class" value="<%= vehicle.weightClass || '' %>">
+                                <label for="weightClass">GVWR / Weight Class</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-well">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-image me-2"></i>Image & Notes</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="imageUrl" name="imageUrl" placeholder="Vehicle Image URL" value="<%= vehicle.imageUrl || '' %>">
+                                <label for="imageUrl">Custom Vehicle Image URL</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="rounded border shadow-sm bg-white d-inline-flex align-items-center justify-content-center p-2" style="width: 100px; height: 60px;">
+                                <% const logoUrl = vehicle.safeDisplayImage; %>
+                                <% if (logoUrl) { %>
+                                    <img src="<%= logoUrl %>" class="img-fluid object-fit-contain w-100 h-100" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-car-side fs-4 opacity-25\'></i>';">
+                                <% } else { %>
+                                    <i class="fa-solid fa-car-side fs-4 opacity-25"></i>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Existing damage, quirks, fleet details..." id="notes" name="notes" style="height: 100px"><%= vehicle.notes || '' %></textarea>
+                        <label for="notes">Quirks, fleet details, damage notes...</label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4 mb-5">
+                    <button type="button" class="btn btn-outline-danger shadow-sm px-4 fw-bold" data-confirm-target="deleteForm" data-confirm-message="Are you sure you want to delete this vehicle permanently? Work orders associated with it may be lost."><i class="fa-solid fa-trash me-2"></i> Delete Vehicle</button>
+                    <button type="submit" id="saveBtn" class="btn btn-primary btn-lg px-5 shadow-sm fw-bold"><i class="fa-solid fa-check me-2"></i> Save Changes</button>
+                </div>
+            </form>
+
+            <form action="/vehicles/<%= vehicle.id %>/delete" method="POST" id="deleteForm" style="display: none;"></form>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/imask"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mileageInput = document.getElementById('mileage');
+        if (mileageInput) IMask(mileageInput, { mask: Number, thousandsSeparator: ',' });
+
+        document.getElementById('editVehicleForm').addEventListener('submit', function() {
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Saving...';
+        });
+    });
+</script>

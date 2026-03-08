@@ -1,0 +1,141 @@
+<div class="container-fluid p-0">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <a href="/users" class="text-decoration-none text-muted small fw-semibold hover-primary"><i class="fa-solid fa-arrow-left me-1"></i> Back to Team</a>
+            <h2 class="fw-bold mt-2">Edit Staff Profile</h2>
+        </div>
+        <% if (!user.isActive) { %>
+            <span class="badge bg-danger fs-6 py-2 px-3 shadow-sm"><i class="fa-solid fa-user-slash me-2"></i>Account Deactivated</span>
+        <% } %>
+    </div>
+
+    <% if (error) { %>
+        <div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation me-2"></i> <%= error %></div>
+    <% } %>
+
+    <div class="card shadow-sm border-0 rounded-4 bg-transparent">
+        <div class="card-body p-0">
+            <form action="/users/<%= user.id %>/edit" method="POST" enctype="multipart/form-data">
+                
+                <div class="form-well mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-id-badge me-2"></i>System Identity & Access</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control fw-bold" id="firstName" name="firstName" placeholder="First Name" value="<%= user.firstName %>" required>
+                                <label for="firstName">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control fw-bold" id="lastName" name="lastName" placeholder="Last Name" value="<%= user.lastName %>" required>
+                                <label for="lastName">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-envelope text-muted"></i></span>
+                                <div class="form-floating flex-grow-1">
+                                    <input type="email" class="form-control border-start-0 ps-0" id="email" name="email" placeholder="Email Address" value="<%= user.email %>" required>
+                                    <label for="email">Login Email Address</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-key text-muted"></i></span>
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control border-start-0 ps-0 text-danger" id="password" name="password" placeholder="New Password">
+                                    <label for="password">Reset Password (Leave blank to keep current)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <div class="form-floating">
+                                <select class="form-select fw-bold border-primary" id="role" name="role">
+                                    <option value="Technician" <%= user.role === 'Technician' ? 'selected' : '' %>>Technician (Work Orders & Bay Access)</option>
+                                    <option value="Service Writer" <%= user.role === 'Service Writer' ? 'selected' : '' %>>Service Writer (Estimates, Intake & Invoicing)</option>
+                                    <option value="Manager" <%= user.role === 'Manager' ? 'selected' : '' %>>Manager (Full System Admin & Financials)</option>
+                                    <option value="Read-Only" <%= user.role === 'Read-Only' ? 'selected' : '' %>>Read-Only (Viewer)</option>
+                                </select>
+                                <label for="role" class="text-primary">System Role & Permissions</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-well mb-4">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-user-tag me-2"></i>Shop Floor & Display Settings</h6>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded border shadow-sm bg-white d-flex align-items-center justify-content-center overflow-hidden" style="width: 80px; height: 80px; flex-shrink: 0;">
+                                    <% if (user.avatarUrl) { %>
+                                        <img id="avatarPreview" src="<%= user.avatarUrl %>" class="img-fluid w-100 h-100" style="object-fit: cover;">
+                                        <i id="avatarIcon" class="fa-solid fa-image fs-2 opacity-25" style="display: none;"></i>
+                                    <% } else { %>
+                                        <img id="avatarPreview" src="" class="img-fluid w-100 h-100" style="object-fit: cover; display: none;">
+                                        <i id="avatarIcon" class="fa-solid fa-image fs-2 opacity-25"></i>
+                                    <% } %>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label for="avatar" class="form-label text-primary fw-bold small mb-1">Update Profile Image (Optional)</label>
+                                    <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Job Title" value="<%= user.title || '' %>">
+                                <label for="title">Official Job Title (e.g. Lead Diagnostician)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="certifications" name="certifications" placeholder="Certifications" value="<%= user.certifications || '' %>">
+                                <label for="certifications">Certifications (e.g. ASE Certified, Red Seal)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-hashtag text-muted"></i></span>
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control border-start-0 ps-0 text-primary fw-bold" id="quickPin" name="quickPin" placeholder="4-Digit PIN" maxlength="4" pattern="\d{4}">
+                                    <label for="quickPin">Shop Floor Login PIN (4 Digits) - Leave blank to keep current</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4 mb-5">
+                    <% if (user.isActive) { %>
+                        <button type="button" class="btn btn-outline-danger shadow-sm px-4 fw-bold" data-confirm-target="deactivateForm" data-confirm-message="Are you sure you want to revoke access? They will no longer be able to log in."><i class="fa-solid fa-user-slash me-2"></i> Revoke Access</button>
+                    <% } else { %>
+                        <button type="button" class="btn btn-outline-success shadow-sm px-4 fw-bold" onclick="document.getElementById('reactivateForm').submit();"><i class="fa-solid fa-user-check me-2"></i> Restore Access</button>
+                    <% } %>
+                    <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm fw-bold"><i class="fa-solid fa-check me-2"></i> Save Changes</button>
+                </div>
+            </form>
+            
+            <form action="/users/<%= user.id %>/deactivate" method="POST" id="deactivateForm" style="display: none;"></form>
+            <form action="/users/<%= user.id %>/reactivate" method="POST" id="reactivateForm" style="display: none;"></form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('avatar').addEventListener('change', function(event) {
+        if (event.target.files && event.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('avatarPreview');
+                const icon = document.getElementById('avatarIcon');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                if (icon) icon.style.display = 'none';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    });
+</script>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-white"> 
+    <div class="login-wrapper">
+        <div class="login-left-pane d-flex flex-column align-items-center justify-content-center">
+            <img src="/images/logo.png" alt="The Red Deer Mechanic Logo" class="login-logo" onerror="this.style.display='none';">
+        </div>
+
+        <div class="login-right-pane">
+            <div class="login-card">
+                <div class="mb-5 text-center text-md-start">
+                    <h2 class="login-form-title mb-2">Welcome Back</h2>
+                    <p class="text-muted">Enter your details to access your shop dashboard.</p>
+                </div>
+                
+                <% if (error) { %>
+                    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                        <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
+                        <div><%= error %></div>
+                    </div>
+                <% } %>
+
+                <form action="/auth/login" method="POST">
+                    <div class="mb-4">
+                        <label for="email" class="form-label text-muted fw-semibold small text-uppercase tracking-wide">Work Email</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-envelope text-muted fs-6"></i></span>
+                            <input type="email" class="form-control form-control-lg border-start-0 ps-0 text-dark fw-medium" id="email" name="email" required value="" placeholder="you@company.com">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label text-muted fw-semibold small text-uppercase tracking-wide mb-0">Password</label>
+                        <div class="input-group input-group-lg mt-2">
+                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-lock text-muted fs-6"></i></span>
+                            <input type="password" class="form-control form-control-lg border-start-0 ps-0 text-dark fw-medium" id="password" name="password" required value="" placeholder="Enter your password">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe" checked>
+                            <label class="form-check-label text-muted small fw-semibold" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="text-primary small fw-semibold text-decoration-none">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow fw-bold">Access Shop Dashboard <i class="fa-solid fa-arrow-right ms-2"></i></button>
+                    
+                    <div class="text-center mt-5">
+                        <p class="text-muted small">Need an account or help logging in?<br>Contact system administrator.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

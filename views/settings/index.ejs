@@ -1,0 +1,420 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@melloware/coloris@latest/dist/coloris.min.css"/>
+<style>
+    .coloris { cursor: pointer; text-transform: uppercase; font-family: monospace; font-weight: bold; }
+    .clr-field { display: block; width: 100%; }
+    .clr-field button { border-radius: 4px; width: 24px; height: 24px; left: 8px; right: auto; top: 50%; transform: translateY(-50%); }
+    .clr-field input { padding-left: 40px !important; }
+</style>
+
+<div class="container-fluid p-0">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mt-2">Shop Settings</h2>
+            <p class="text-muted mb-0">Manage your shop identity, branding, and parameters.</p>
+        </div>
+    </div>
+
+    <% if (success) { %>
+        <div class="alert alert-success d-flex align-items-center mb-4 border-0 shadow-sm" role="alert">
+            <i class="fa-solid fa-circle-check me-2 fs-5"></i>
+            <div class="fw-bold">Settings updated successfully!</div>
+        </div>
+    <% } %>
+
+    <div class="row g-4">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow-sm border-0 rounded-4 bg-transparent mb-4">
+                <div class="card-body p-0">
+                    
+                    <form action="/settings" method="POST" enctype="multipart/form-data" id="settingsForm">
+                        
+                        <ul class="nav nav-tabs wizard-tabs mb-4 px-3" id="settingsTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="identity-tab" data-bs-toggle="tab" data-bs-target="#identity" type="button" role="tab"><span class="wizard-step-num">1</span> Identity</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="branding-tab" data-bs-toggle="tab" data-bs-target="#branding" type="button" role="tab"><span class="wizard-step-num">2</span> Branding</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="financial-tab" data-bs-toggle="tab" data-bs-target="#financial" type="button" role="tab"><span class="wizard-step-num">3</span> Financials & Legal</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="settingsTabsContent">
+                            
+                            <div class="tab-pane fade show active" id="identity" role="tabpanel">
+                                <div class="form-well">
+                                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-building me-2"></i>Shop Information</h6>
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label text-muted fw-bold small text-uppercase mb-1">Shop Logo</label>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div id="logoPreviewContainer" class="border rounded d-flex align-items-center justify-content-center overflow-hidden shadow-sm p-2" style="width: 120px; height: 80px; flex-shrink: 0;">
+                                                    <img id="logoPreview" src="<%= settings.logoUrl || '/images/logo.png' %>" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/400x150/111/FFF?text=Shop+Logo'">
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <input class="form-control" type="file" id="logoFile" name="logoFile" accept="image/*" onchange="document.getElementById('logoPreview').src = window.URL.createObjectURL(this.files[0])">
+                                                    <div class="small text-muted mt-1">Recommended: PNG with transparent background. (Preview background mimics your Sidebar color)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <input type="url" class="form-control form-control-sm text-muted" id="logoUrl" name="logoUrl" placeholder="Or paste an external Logo URL (Leave blank to use default)" value="<%= settings.logoUrl %>">
+                                        </div>
+                                        <div class="col-md-12 mt-4">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control fw-bold fs-5" id="shopName" name="shopName" placeholder="Shop Name" value="<%= settings.shopName %>" required>
+                                                <label for="shopName">Shop Name</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-4">
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fa-solid fa-phone text-muted"></i></span>
+                                                <div class="form-floating flex-grow-1">
+                                                    <input type="tel" class="form-control border-start-0 ps-0 fw-bold" id="phone" name="phone" placeholder="Shop Phone" value="<%= settings.phone %>" required>
+                                                    <label for="phone">Main Shop Phone</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-4">
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fa-solid fa-envelope text-muted"></i></span>
+                                                <div class="form-floating flex-grow-1">
+                                                    <input type="email" class="form-control border-start-0 ps-0" id="email" name="email" placeholder="Shop Email" value="<%= settings.email %>" required>
+                                                    <label for="email">Public Contact Email</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mt-4">
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fa-solid fa-location-dot text-muted"></i></span>
+                                                <div class="form-floating flex-grow-1">
+                                                    <input type="text" class="form-control border-start-0 ps-0" id="address" name="address" placeholder="Street Address" value="<%= settings.address %>">
+                                                    <label for="address">Street Address</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mt-3">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="city" name="city" placeholder="City" value="<%= settings.city %>">
+                                                <label for="city">City</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mt-3">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control text-uppercase" id="province" name="province" placeholder="Province" value="<%= settings.province %>">
+                                                <label for="province">Province</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mt-3">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control text-uppercase" id="postalCode" name="postalCode" placeholder="Postal Code" value="<%= settings.postalCode %>">
+                                                <label for="postalCode">Postal Code</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-3 border-top pt-3">
+                                            <div class="form-floating shadow-sm">
+                                                <select class="form-select fw-bold border-primary text-primary" id="unitOfMeasure" name="unitOfMeasure">
+                                                    <option value="km" <%= settings.unitOfMeasure === 'km' ? 'selected' : '' %>>Metric (Kilometers)</option>
+                                                    <option value="mi" <%= settings.unitOfMeasure === 'mi' ? 'selected' : '' %>>Imperial (Miles)</option>
+                                                </select>
+                                                <label for="unitOfMeasure">Units of Measure</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="branding" role="tabpanel">
+                                <div class="row g-4">
+                                    <div class="col-md-7">
+                                        <div class="form-well h-100">
+                                            <h6 class="text-uppercase text-muted fw-bold small mb-4"><i class="fa-solid fa-palette me-2"></i>5-Point Color Palette</h6>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label text-muted fw-bold small mb-1">Primary Accent Color</label>
+                                                <input type="text" class="form-control coloris" name="primaryColor" id="primaryColorInp" value="<%= settings.primaryColor %>">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label text-muted fw-bold small mb-1">Button Background</label>
+                                                <input type="text" class="form-control coloris" name="btnBgColor" id="btnBgColorInp" value="<%= settings.btnBgColor %>">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label text-muted fw-bold small mb-1">Button Text Color</label>
+                                                <input type="text" class="form-control coloris" name="btnTextColor" id="btnTextColorInp" value="<%= settings.btnTextColor %>">
+                                            </div>
+                                            <hr class="opacity-25">
+                                            <div class="mb-3">
+                                                <label class="form-label text-muted fw-bold small mb-1">Sidebar Background</label>
+                                                <input type="text" class="form-control coloris" name="sidebarBgColor" id="sidebarBgColorInp" value="<%= settings.sidebarBgColor %>">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label text-muted fw-bold small mb-1">Sidebar Text & Icons</label>
+                                                <input type="text" class="form-control coloris" name="sidebarTextColor" id="sidebarTextColorInp" value="<%= settings.sidebarTextColor %>">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <div class="form-well h-100" style="background-color: #f8fafc;">
+                                            <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-eye me-2"></i>Live Preview</h6>
+                                            
+                                            <div class="d-flex rounded-3 shadow-sm overflow-hidden" style="height: 250px; border: 1px solid #e2e8f0;">
+                                                <div id="prevSidebar" class="p-3" style="width: 80px; transition: all 0.2s;">
+                                                    <div style="font-size: 8px; opacity: 0.5; margin-bottom: 10px; text-transform: uppercase; font-weight: bold;">Menu</div>
+                                                    <div id="prevActive" style="padding: 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-bottom: 6px; transition: all 0.2s;">Active</div>
+                                                    <div style="padding: 6px; font-size: 10px; opacity: 0.8;">Link</div>
+                                                    <div style="padding: 6px; font-size: 10px; opacity: 0.8;">Link</div>
+                                                </div>
+                                                <div class="flex-grow-1 bg-white p-3">
+                                                    <div style="width: 50%; height: 12px; background: #e2e8f0; border-radius: 4px; margin-bottom: 20px;"></div>
+                                                    <button type="button" id="prevBtn" class="w-100 mb-3 shadow-sm" style="border: none; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: bold; transition: all 0.2s;">Primary Action</button>
+                                                    <div style="width: 100%; height: 60px; border: 1px solid #e2e8f0; border-radius: 6px;"></div>
+                                                </div>
+                                            </div>
+                                            <small class="text-muted d-block mt-3 text-center">Changes apply globally upon saving.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="financial" role="tabpanel">
+                                <div class="form-well" style="background-color: #f8fafc; border-color: #e2e8f0;">
+                                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-sack-dollar me-2 text-success"></i>Financial Parameters</h6>
+                                    
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted fw-bold small text-uppercase mb-1">Master Labor Rate / Hr</label>
+                                            <div class="input-group shadow-sm">
+                                                <span class="input-group-text bg-white text-success fw-bold fs-5">$</span>
+                                                <input type="number" step="0.01" class="form-control border-start-0 ps-0 fw-bold text-dark fs-5 py-2" id="laborRate" name="laborRate" value="<%= settings.laborRate %>" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-primary fw-bold small text-uppercase mb-1">Smart Tax Profile</label>
+                                            <select class="form-select fw-bold border-primary text-primary shadow-sm py-2 fs-5" id="smartTaxDropdown">
+                                                <option value="AB" <%= settings.province === 'AB' ? 'selected' : '' %>>Alberta (5% GST)</option>
+                                                <option value="BC" <%= settings.province === 'BC' ? 'selected' : '' %>>British Columbia (12% GST+PST)</option>
+                                                <option value="MB" <%= settings.province === 'MB' ? 'selected' : '' %>>Manitoba (12% GST+PST)</option>
+                                                <option value="NB" <%= settings.province === 'NB' ? 'selected' : '' %>>New Brunswick (15% HST)</option>
+                                                <option value="NL" <%= settings.province === 'NL' ? 'selected' : '' %>>Newfoundland (15% HST)</option>
+                                                <option value="NS" <%= settings.province === 'NS' ? 'selected' : '' %>>Nova Scotia (15% HST)</option>
+                                                <option value="ON" <%= settings.province === 'ON' ? 'selected' : '' %>>Ontario (13% HST)</option>
+                                                <option value="PE" <%= settings.province === 'PE' ? 'selected' : '' %>>Prince Edward Island (15% HST)</option>
+                                                <option value="QC" <%= settings.province === 'QC' ? 'selected' : '' %>>Quebec (14.975% GST+QST)</option>
+                                                <option value="SK" <%= settings.province === 'SK' ? 'selected' : '' %>>Saskatchewan (11% GST+PST)</option>
+                                            </select>
+                                            <input type="hidden" id="hiddenTaxRate" name="taxRate" value="<%= settings.taxRate %>">
+                                            <input type="hidden" id="hiddenTaxName" name="taxName" value="<%= settings.taxName %>">
+                                        </div>
+                                        <div class="col-md-6 mt-2">
+                                            <div class="form-floating shadow-sm">
+                                                <input type="text" class="form-control text-uppercase" id="taxNumber" name="taxNumber" placeholder="GST Number" value="<%= settings.taxNumber %>">
+                                                <label for="taxNumber">GST / Tax Registration Number</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-2">
+                                            <div class="form-floating shadow-sm">
+                                                <input type="text" class="form-control text-uppercase" id="regulatoryNumber" name="regulatoryNumber" placeholder="AMVIC Number" value="<%= settings.regulatoryNumber %>">
+                                                <label for="regulatoryNumber">AMVIC / Regulatory License #</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="text-muted opacity-25">
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small fw-bold mb-1">Shop Supplies / Env Fee (% of Labor)</label>
+                                            <div class="input-group shadow-sm">
+                                                <input type="number" step="0.01" class="form-control fw-bold text-dark py-2" id="shopSuppliesPercent" name="shopSuppliesPercent" value="<%= settings.shopSuppliesPercent %>" required>
+                                                <span class="input-group-text bg-white text-muted fw-bold">%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small fw-bold mb-1">Maximum Fee Cap</label>
+                                            <div class="input-group shadow-sm">
+                                                <span class="input-group-text bg-white text-muted fw-bold">Max $</span>
+                                                <input type="number" step="0.01" class="form-control border-start-0 ps-0 fw-bold text-dark py-2" id="shopSuppliesCap" name="shopSuppliesCap" value="<%= settings.shopSuppliesCap %>" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-well">
+                                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-list-ol me-2"></i>Workflow Settings</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small fw-bold mb-1">Starting Work Order #</label>
+                                            <div class="input-group shadow-sm">
+                                                <span class="input-group-text bg-white text-muted fw-bold">#</span>
+                                                <input type="number" class="form-control fw-bold text-dark py-2" id="nextWorkOrderNumber" name="nextWorkOrderNumber" value="<%= settings.nextWorkOrderNumber %>" required>
+                                            </div>
+                                            <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">The next RO created will use this number.</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small fw-bold mb-1">Default Estimate Validity</label>
+                                            <div class="input-group shadow-sm">
+                                                <input type="number" class="form-control fw-bold text-dark py-2" id="estimateValidityDays" name="estimateValidityDays" value="<%= settings.estimateValidityDays %>" required>
+                                                <span class="input-group-text bg-white text-muted fw-bold">Days</span>
+                                            </div>
+                                            <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">Prints on estimates to lock in parts pricing.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-well">
+                                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-gavel me-2"></i>Legal Fine Print</h6>
+                                    <div class="form-floating">
+                                        <textarea class="form-control small text-muted" placeholder="Invoice fine print..." id="legalDisclaimer" name="legalDisclaimer" style="height: 120px"><%= settings.legalDisclaimer %></textarea>
+                                        <label for="legalDisclaimer">Appears at the bottom of all Estimates and Invoices</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4 mb-5 px-3">
+                            <button type="button" class="btn btn-outline-danger fw-bold shadow-sm" data-confirm-target="resetBrandingForm" data-confirm-message="Are you sure you want to reset your branding colors back to the default theme? (This will not affect your financials or shop info)">
+                                <i class="fa-solid fa-rotate-left me-2"></i> Reset Theme
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-lg px-5 shadow fw-bold">
+                                <i class="fa-solid fa-floppy-disk me-2"></i> Save All Settings
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <form action="/settings/reset-branding" method="POST" id="resetBrandingForm" style="display: none;"></form>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden bg-white">
+                <div class="p-4 border-bottom bg-light">
+                    <h5 class="fw-bold mb-1"><i class="fa-solid fa-list-check me-2 text-dark"></i>Standard Services</h5>
+                    <p class="text-muted small mb-0">Pre-priced canned jobs for rapid estimate building.</p>
+                </div>
+                
+                <div class="p-3 bg-white border-bottom">
+                    <form action="/settings/services" method="POST">
+                        <div class="form-floating mb-2">
+                            <input type="text" class="form-control form-control-sm fw-bold" id="serviceName" name="name" placeholder="Service Name" required>
+                            <label for="serviceName">Service Name (e.g., OOP Inspection)</label>
+                        </div>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-light border-end-0">$</span>
+                            <div class="form-floating flex-grow-1">
+                                <input type="number" step="0.01" class="form-control border-start-0 ps-0 text-success fw-bold" id="flatPrice" name="flatPrice" placeholder="Flat Price" required>
+                                <label for="flatPrice">Flat Price</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-success w-100 fw-bold btn-sm"><i class="fa-solid fa-plus me-1"></i> Add Canned Job</button>
+                    </form>
+                </div>
+
+                <div class="p-0">
+                    <% if (services && services.length > 0) { %>
+                        <ul class="list-group list-group-flush">
+                            <% services.forEach(svc => { %>
+                                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                    <div>
+                                        <div class="fw-bold text-dark"><%= svc.name %></div>
+                                        <div class="text-success small fw-bold">$<%= Number(svc.flatPrice).toFixed(2) %></div>
+                                    </div>
+                                    <form action="/settings/services/<%= svc.id %>/delete" method="POST" data-confirm="Are you sure you want to delete this standard service?">
+                                        <button type="submit" class="btn btn-sm btn-light text-danger border shadow-sm"><i class="fa-solid fa-xmark"></i></button>
+                                    </form>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    <% } else { %>
+                        <div class="p-4 text-center text-muted small">
+                            <i class="fa-solid fa-receipt fs-3 opacity-25 mb-2 d-block"></i>
+                            No standard services created yet.
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@melloware/coloris@latest/dist/coloris.min.js"></script>
+
+<script>
+    window.addEventListener('load', () => {
+        Coloris({
+            el: '.coloris',
+            theme: 'polaroid',
+            themeMode: 'light',
+            alpha: false,
+            format: 'hex',
+            swatches: ['#d32f2f', '#0b0f19', '#10b981', '#3b82f6', '#f59e0b', '#ffffff', '#212529']
+        });
+
+        const pColor = document.getElementById('primaryColorInp');
+        const bBg = document.getElementById('btnBgColorInp');
+        const bTxt = document.getElementById('btnTextColorInp');
+        const sBg = document.getElementById('sidebarBgColorInp');
+        const sTxt = document.getElementById('sidebarTextColorInp');
+
+        const prevSidebar = document.getElementById('prevSidebar');
+        const prevActive = document.getElementById('prevActive');
+        const prevBtn = document.getElementById('prevBtn');
+        const logoPreviewContainer = document.getElementById('logoPreviewContainer');
+
+        function updatePreview() {
+            if(prevSidebar && pColor && bBg && bTxt && sBg && sTxt) {
+                prevSidebar.style.backgroundColor = sBg.value;
+                prevSidebar.style.color = sTxt.value;
+                prevActive.style.backgroundColor = pColor.value;
+                prevActive.style.color = '#ffffff';
+                prevBtn.style.backgroundColor = bBg.value;
+                prevBtn.style.color = bTxt.value;
+                
+                if(logoPreviewContainer) {
+                    logoPreviewContainer.style.backgroundColor = sBg.value;
+                }
+            }
+        }
+
+        document.addEventListener('coloris:pick', event => { updatePreview(); });
+
+        [pColor, bBg, bTxt, sBg, sTxt].forEach(input => {
+            if(input) {
+                input.addEventListener('input', updatePreview);
+                input.addEventListener('change', updatePreview);
+            }
+        });
+
+        updatePreview();
+
+        const taxDropdown = document.getElementById('smartTaxDropdown');
+        const hiddenRate = document.getElementById('hiddenTaxRate');
+        const hiddenName = document.getElementById('hiddenTaxName');
+
+        const taxDictionary = {
+            'AB': { rate: 5.00, name: 'GST' },
+            'BC': { rate: 12.00, name: 'GST + PST' },
+            'MB': { rate: 12.00, name: 'GST + PST' },
+            'NB': { rate: 15.00, name: 'HST' },
+            'NL': { rate: 15.00, name: 'HST' },
+            'NS': { rate: 15.00, name: 'HST' },
+            'ON': { rate: 13.00, name: 'HST' },
+            'PE': { rate: 15.00, name: 'HST' },
+            'QC': { rate: 14.975, name: 'GST + QST' },
+            'SK': { rate: 11.00, name: 'GST + PST' }
+        };
+
+        if(taxDropdown) {
+            taxDropdown.addEventListener('change', function() {
+                const val = this.value;
+                if (taxDictionary[val]) {
+                    hiddenRate.value = taxDictionary[val].rate;
+                    hiddenName.value = taxDictionary[val].name;
+                }
+            });
+        }
+    });
+</script>

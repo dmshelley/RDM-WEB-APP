@@ -1,0 +1,183 @@
+<div class="container-fluid p-0">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <a href="/customers" class="text-decoration-none text-muted small fw-semibold hover-primary"><i class="fa-solid fa-arrow-left me-1"></i> Back to Customers</a>
+        </div>
+        <div class="d-flex gap-2">
+            <% if (can('edit:customer')) { %>
+                <a href="/customers/<%= customer.id %>/edit" class="btn btn-light border shadow-sm fw-bold"><i class="fa-solid fa-pen text-muted me-1"></i> Edit Profile</a>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-body p-0">
+                    <div class="p-4 text-center border-bottom" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
+                        <div class="ui-avatar mx-auto mb-3">
+                            <%= customer.firstName.charAt(0).toUpperCase() %><%= customer.lastName.charAt(0).toUpperCase() %>
+                        </div>
+                        <h4 class="fw-bold mb-1"><%= customer.firstName %> <%= customer.lastName %></h4>
+                        <% if (customer.companyName) { %>
+                            <span class="badge bg-dark mb-2"><i class="fa-solid fa-building me-1"></i> <%= customer.companyName %></span>
+                        <% } %>
+                        <p class="text-muted small mb-0">Client since <%= new Date(customer.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></p>
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-uppercase text-muted fw-bold small mb-0">Contact Details</h6>
+                            <% 
+                                let parsedContacts = [];
+                                if (customer.additionalContacts) {
+                                    try { parsedContacts = typeof customer.additionalContacts === 'string' ? JSON.parse(customer.additionalContacts) : customer.additionalContacts; } catch (e) {}
+                                }
+                            %>
+                            <% if (parsedContacts && parsedContacts.length > 0) { %>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light border text-primary fw-bold rounded-pill dropdown-toggle shadow-sm px-3 py-1" type="button" data-bs-toggle="dropdown">
+                                        + <%= parsedContacts.length %> more
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2">
+                                        <% parsedContacts.forEach(contact => { %>
+                                            <li class="px-3 py-2 border-bottom">
+                                                <span class="small text-muted text-uppercase fw-bold"><%= contact.label %></span><br>
+                                                <span class="fw-semibold text-dark"><i class="fa-solid <%= contact.type === 'Phone' ? 'fa-phone' : 'fa-envelope' %> me-2 text-primary small"></i><%= contact.value %></span>
+                                            </li>
+                                        <% }) %>
+                                    </ul>
+                                </div>
+                            <% } %>
+                        </div>
+                        
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-light rounded text-primary me-3 border"><i class="fa-solid fa-phone"></i></div>
+                            <div>
+                                <div class="fw-bold"><%= customer.phone %></div>
+                                <div class="small text-muted">Primary <%= customer.contactPreference ? `(Prefers ${customer.contactPreference})` : '' %></div>
+                            </div>
+                        </div>
+
+                        <% if (customer.email) { %>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-light rounded text-muted me-3 border"><i class="fa-solid fa-envelope"></i></div>
+                            <div>
+                                <div class="fw-bold"><%= customer.email %></div>
+                                <div class="small text-muted">Email</div>
+                            </div>
+                        </div>
+                        <% } %>
+
+                        <% if (customer.address || customer.city) { %>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-light rounded text-muted me-3 border"><i class="fa-solid fa-location-dot"></i></div>
+                            <div>
+                                <div class="fw-bold"><%= customer.address %></div>
+                                <div class="small text-muted"><%= customer.city %>, <%= customer.province %> <%= customer.postalCode %></div>
+                            </div>
+                        </div>
+                        <% } %>
+
+                        <% if (customer.notes) { %>
+                            <hr class="my-4 text-muted opacity-25">
+                            <h6 class="text-uppercase text-muted fw-bold small mb-2"><i class="fa-solid fa-clipboard me-2"></i>Notes</h6>
+                            <div class="bg-light rounded p-3 text-dark small border shadow-sm">
+                                <%= customer.notes %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8 col-lg-7">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="fa-solid fa-warehouse me-2 text-dark"></i>Customer Vehicles</h5>
+                
+                <% if (can('create:vehicle')) { %>
+                    <a href="/customers/<%= customer.id %>/vehicles/new" class="btn btn-outline-primary btn-sm fw-bold shadow-sm"><i class="fa-solid fa-plus me-1"></i> Add Vehicle</a>
+                <% } %>
+            </div>
+
+            <% if (customer.Vehicles && customer.Vehicles.length > 0) { %>
+                <div class="row g-3 mb-5">
+                    <% customer.Vehicles.forEach(vehicle => { %>
+                        <div class="col-12">
+                            <div class="card vehicle-card rounded-4 bg-white border-0 shadow-sm">
+                                <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                                    <div class="d-flex align-items-center gap-4">
+                                        <div class="vehicle-avatar bg-white rounded-3 d-flex align-items-center justify-content-center border shadow-sm p-2">
+                                            <% 
+                                                const logoUrl = vehicle.imageUrl || vehicle.brandLogo; 
+                                                const brandHex = globalSettings.primaryColor ? globalSettings.primaryColor.replace('#', '') : 'd32f2f';
+                                            %>
+                                            <% if (logoUrl) { %>
+                                                <img src="<%= logoUrl %>" class="img-fluid object-fit-contain w-100 h-100" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<%= vehicle.make %>&background=f8f9fa&color=<%= brandHex %>&bold=true&length=2&size=100';">
+                                            <% } else { %>
+                                                <i class="fa-solid fa-car-side fs-1 opacity-25"></i>
+                                            <% } %>
+                                        </div>
+                                        <div>
+                                            <h4 class="fw-bold mb-2 text-dark"><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></h4>
+                                            
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <% if (vehicle.licensePlate) { %>
+                                                    <span class="badge bg-warning text-dark font-monospace border border-warning-subtle shadow-sm px-2 py-1 fs-6"><%= vehicle.licensePlate.toUpperCase() %></span>
+                                                <% } %>
+                                                <% if (vehicle.vin) { %>
+                                                    <span class="badge bg-light text-dark border font-monospace px-2 py-1"><i class="fa-solid fa-barcode text-muted me-1"></i><%= vehicle.vin %></span>
+                                                <% } %>
+                                                <% if (vehicle.engineSize) { %>
+                                                    <span class="badge bg-light text-primary border px-2 py-1 fw-bold"><i class="fa-solid fa-piston me-1"></i><%= vehicle.engineSize %></span>
+                                                <% } %>
+                                                <% if (vehicle.fuelType) { %>
+                                                    <span class="badge bg-light text-dark border px-2 py-1"><i class="fa-solid fa-gas-pump text-muted me-1"></i><%= vehicle.fuelType %></span>
+                                                <% } %>
+                                                <% if (vehicle.bodyStyle) { %>
+                                                    <span class="badge bg-light text-dark border px-2 py-1"><i class="fa-solid fa-car text-muted me-1"></i><%= vehicle.bodyStyle %></span>
+                                                <% } %>
+                                            </div>
+                                            
+                                            <div class="text-muted small d-flex flex-wrap gap-3 fw-semibold">
+                                                <% if (vehicle.mileage) { %><span><i class="fa-solid fa-gauge-high me-1"></i> <%= vehicle.mileage.toLocaleString() %> km</span><% } %>
+                                                <% if (vehicle.transmission) { %><span><i class="fa-solid fa-gears me-1"></i> <%= vehicle.transmission %></span><% } %>
+                                                <% if (vehicle.drivetrain) { %><span><i class="fa-solid fa-truck-monster me-1"></i> <%= vehicle.drivetrain %></span><% } %>
+                                                <% if (vehicle.weightClass) { %><span><i class="fa-solid fa-weight-scale me-1"></i> <%= vehicle.weightClass %></span><% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-md-end border-start ps-md-4 py-2">
+                                        <% if (can('create:estimate')) { %>
+                                            <button class="btn btn-primary fw-bold shadow-sm mb-2 w-100 py-2"><i class="fa-solid fa-wrench me-2"></i>New Estimate</button><br>
+                                        <% } %>
+                                        <a href="/vehicles/<%= vehicle.id %>" class="text-decoration-none text-muted fw-semibold small hover-primary"><i class="fa-solid fa-gear me-1"></i> Manage Vehicle</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="card shadow-sm border-0 rounded-4 mb-5 bg-white">
+                    <div class="card-body p-5 text-center text-muted">
+                        <i class="fa-solid fa-car-side fs-1 opacity-25 mb-3"></i>
+                        <h6 class="fw-bold text-dark">No vehicles on file</h6>
+                        <p class="small mb-0">Add a vehicle to this customer to begin writing estimates and work orders.</p>
+                    </div>
+                </div>
+            <% } %>
+
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-2">
+                <h5 class="fw-bold mb-0"><i class="fa-solid fa-clipboard-list me-2 text-dark"></i>Recent Activity</h5>
+            </div>
+            <div class="card border border-dashed rounded-4 bg-transparent">
+                <div class="card-body p-5 text-center text-muted">
+                    <i class="fa-solid fa-folder-open fs-2 opacity-25 mb-3"></i>
+                    <h6 class="fw-bold text-dark">No history found</h6>
+                    <p class="small mb-0">Completed and active work orders will populate here automatically.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

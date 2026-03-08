@@ -1,0 +1,146 @@
+<div class="container-fluid p-0">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mt-2">My Profile</h2>
+            <p class="text-muted mb-0">Update your personal account details and preferences</p>
+        </div>
+    </div>
+
+    <% if (error) { %>
+        <div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation me-2"></i> <%= error %></div>
+    <% } %>
+    <% if (success) { %>
+        <div class="alert alert-success border-0 shadow-sm"><i class="fa-solid fa-circle-check me-2 fs-5"></i> <%= success %></div>
+    <% } %>
+
+    <div class="card shadow-sm border-0 rounded-4 bg-transparent">
+        <div class="card-body p-0">
+            <form action="/profile" method="POST" id="profileForm" enctype="multipart/form-data">
+                
+                <div class="card bg-white border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
+                    <div class="card-body p-4 d-flex align-items-center gap-4">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm border border-4 border-white" 
+                             style="width: 100px; height: 100px; background-color: var(--shop-primary); color: var(--shop-btn-text) !important; font-size: 2.5rem; overflow: hidden;">
+                             <% if (user.avatarUrl) { %>
+                                <img src="<%= user.avatarUrl %>" class="w-100 h-100" style="object-fit: cover;">
+                             <% } else { %>
+                                <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
+                             <% } %>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1 text-dark"><%= user.firstName %> <%= user.lastName %></h3>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-primary text-uppercase px-2 py-1"><i class="fa-solid fa-shield-halved me-1"></i> <%= user.role %></span>
+                                <% if (user.title) { %>
+                                    <span class="text-muted fw-semibold small"><i class="fa-solid fa-briefcase me-1"></i> <%= user.title %></span>
+                                <% } %>
+                            </div>
+                            <% if (user.certifications) { %>
+                                <div class="small text-muted"><i class="fa-solid fa-award me-1 text-warning"></i> <%= user.certifications %></div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="form-well h-100">
+                            <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-id-badge me-2"></i>Account Identity</h6>
+                            <div class="row g-3">
+                                <div class="col-md-12 mb-2">
+                                    <label for="avatar" class="form-label text-muted fw-bold small mb-1"><i class="fa-solid fa-image me-2"></i>Update Profile Image</label>
+                                    <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control fw-bold" id="firstName" name="firstName" placeholder="First Name" value="<%= user.firstName %>" required>
+                                        <label for="firstName">First Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control fw-bold" id="lastName" name="lastName" placeholder="Last Name" value="<%= user.lastName %>" required>
+                                        <label for="lastName">Last Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-envelope text-muted"></i></span>
+                                        <div class="form-floating flex-grow-1">
+                                            <input type="email" class="form-control border-start-0 ps-0" id="email" name="email" placeholder="Email Address" value="<%= user.email %>" required>
+                                            <label for="email">Login Email Address</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4 opacity-25">
+
+                            <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-lock me-2"></i>Security Details</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-key text-muted"></i></span>
+                                        <div class="form-floating flex-grow-1">
+                                            <input type="text" class="form-control border-start-0 ps-0 text-danger" id="password" name="password" placeholder="New Password">
+                                            <label for="password">New Password (Leave blank to keep current)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-hashtag text-muted"></i></span>
+                                        <div class="form-floating flex-grow-1">
+                                            <input type="text" class="form-control border-start-0 ps-0 text-primary fw-bold" id="quickPin" name="quickPin" placeholder="4-Digit PIN" maxlength="4" pattern="\d{4}">
+                                            <label for="quickPin">New Quick PIN (Leave blank to keep current)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-well h-100 bg-white">
+                            <h6 class="text-uppercase text-muted fw-bold small mb-4"><i class="fa-solid fa-bell me-2"></i>System Notifications</h6>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="notifyAssigned" name="notifyAssigned" <%= prefs.notifyAssigned ? 'checked' : '' %>>
+                                <label class="form-check-label fw-semibold text-dark ms-2" for="notifyAssigned">Job Assignments</label>
+                                <div class="small text-muted mt-1 ms-2">Alert me when a Work Order is assigned to me.</div>
+                            </div>
+                            
+                            <hr class="opacity-25">
+
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="notifyParts" name="notifyParts" <%= prefs.notifyParts ? 'checked' : '' %>>
+                                <label class="form-check-label fw-semibold text-dark ms-2" for="notifyParts">Parts Arrival</label>
+                                <div class="small text-muted mt-1 ms-2">Alert me when parts arrive for my active job.</div>
+                            </div>
+
+                            <hr class="opacity-25">
+
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="notifyApproval" name="notifyApproval" <%= prefs.notifyApproval ? 'checked' : '' %>>
+                                <label class="form-check-label fw-semibold text-dark ms-2" for="notifyApproval">Estimate Approvals</label>
+                                <div class="small text-muted mt-1 ms-2">Alert me when a customer approves my estimate.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 mb-5">
+                    <button type="submit" id="saveBtn" class="btn btn-primary btn-lg px-5 shadow-sm fw-bold"><i class="fa-solid fa-floppy-disk me-2"></i> Save Profile Settings</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('profileForm').addEventListener('submit', function() {
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Saving...';
+    });
+</script>

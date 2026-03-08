@@ -1,0 +1,154 @@
+<div class="container-fluid p-0">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <a href="/customers/<%= customer.id %>" class="text-decoration-none text-muted small fw-semibold hover-primary"><i class="fa-solid fa-arrow-left me-1"></i> Back to Profile</a>
+            <h2 class="fw-bold mt-2">Add Vehicle to Garage</h2>
+            <p class="text-muted mb-0">Owner: <%= customer.firstName %> <%= customer.lastName %></p>
+        </div>
+    </div>
+
+    <% if (error) { %>
+        <div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation me-2"></i> <%= error %></div>
+    <% } %>
+
+    <div class="card shadow-sm border-0 rounded-4 bg-transparent">
+        <div class="card-body p-0">
+            <form action="/customers/<%= customer.id %>/vehicles/new" method="POST" id="addVehicleForm">
+                
+                <div class="form-well" style="background-color: #f8fafc; border-color: #e2e8f0;">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold text-primary mb-2"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>Smart VIN Decoder</label>
+                            <div class="input-group input-group-lg shadow-sm">
+                                <span class="input-group-text bg-white text-primary"><i class="fa-solid fa-barcode"></i></span>
+                                <input type="text" class="form-control text-uppercase font-monospace border-start-0" id="vinInput" name="vin" maxlength="17" placeholder="Enter 17-digit VIN">
+                                <button class="btn btn-primary fw-bold px-4" type="button" id="decodeVinBtn" onclick="decodeVin()">Decode</button>
+                            </div>
+                            <small class="text-muted mt-2 d-block opacity-75">Automatically fetches Year, Make, Model, Engine, Fuel, and Body Type.</small>
+                        </div>
+                        <div class="col-md-4 text-end mt-3 mt-md-0">
+                            <input type="hidden" name="imageUrl" id="imageUrlInput">
+                            <div id="imagePlaceholder" class="bg-white border rounded d-inline-flex align-items-center justify-content-center text-muted shadow-sm" style="width: 140px; height: 90px;">
+                                <i class="fa-solid fa-car-side fs-1 opacity-50"></i>
+                            </div>
+                            <img id="vehicleImagePreview" src="" alt="Vehicle Preview" class="rounded object-fit-cover shadow border" style="width: 140px; height: 90px; display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-well">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-car me-2"></i>Vehicle Identification</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="number" class="form-control fw-bold" id="yearInput" name="year" min="1900" max="2030" placeholder="Year" required>
+                                <label for="yearInput">Year <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control fw-bold text-uppercase" id="makeInput" name="make" placeholder="Make" required>
+                                <label for="makeInput">Make <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control fw-bold text-uppercase" id="modelInput" name="model" placeholder="Model" required>
+                                <label for="modelInput">Model <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mt-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-hashtag text-muted"></i></span>
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control border-start-0 ps-0 text-uppercase" id="licensePlate" name="licensePlate" placeholder="License Plate">
+                                    <label for="licensePlate">License Plate</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-palette text-muted"></i></span>
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control border-start-0 ps-0" id="color" name="color" placeholder="Color">
+                                    <label for="color">Exterior Color</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-well">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-gears me-2"></i>Mechanical Specifications</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control fw-bold text-danger" id="mileage" name="mileage" placeholder="Mileage" required>
+                                    <label for="mileage">Current Mileage <span class="text-danger">*</span></label>
+                                </div>
+                                <span class="input-group-text bg-light text-muted">km</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-piston text-muted"></i></span>
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control text-uppercase" id="engineSize" name="engineSize" placeholder="Engine Size">
+                                    <label for="engineSize">Engine Size</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="transmission" name="transmission" placeholder="Transmission">
+                                <label for="transmission">Transmission</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="drivetrain" name="drivetrain" placeholder="Drivetrain">
+                                <label for="drivetrain">Drivetrain</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="fuelType" name="fuelType" placeholder="Fuel Type">
+                                <label for="fuelType">Fuel Type</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="bodyStyle" name="bodyStyle" placeholder="Body Style">
+                                <label for="bodyStyle">Body Style</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="weightClass" name="weightClass" placeholder="GVWR Weight Class">
+                                <label for="weightClass">GVWR / Weight Class</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-well">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3"><i class="fa-solid fa-wrench me-2"></i>Vehicle Notes</h6>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Existing damage, quirks, etc." id="vehicleNotes" name="vehicleNotes" style="height: 100px"></textarea>
+                        <label for="vehicleNotes">Existing damage, quirks, etc.</label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4 mb-5">
+                    <a href="/customers/<%= customer.id %>" class="btn btn-light border text-dark shadow-sm px-4"><i class="fa-solid fa-xmark me-2"></i> Cancel</a>
+                    <button type="submit" id="submitVehicleBtn" class="btn btn-primary btn-lg px-5 shadow-sm fw-bold"><i class="fa-solid fa-check me-2"></i> Add Vehicle to Garage</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/imask"></script>
+<script src="/js/intake.js?v=4"></script>
