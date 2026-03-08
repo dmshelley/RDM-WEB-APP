@@ -107,3 +107,101 @@ Always prioritize data integrity when generating or modifying code.
 Read the existing files before suggesting changes.
 
 Respect naming conventions and coding patterns in existing code.
+
+{
+  "project": "RDM-WEB-APP",
+  "description": "High-performance, workflow-driven Shop Management System for automotive repair shops. Manages work orders, jobs, line items, appointments, with real-time notifications, approvals, and sales recovery.",
+  "techStack": {
+    "backend": ["Node.js", "Express.js", "Sequelize ORM", "MySQL"],
+    "realtime": ["Socket.io"],
+    "frontend": ["Server-rendered views", "vanilla JavaScript", "CSS"],
+    "authentication": ["JWT-based for employees and roles"]
+  },
+  "folders": [
+    {
+      "name": "config",
+      "role": "Database & environment configuration",
+      "aiNotes": "Do not hardcode credentials; use .env variables."
+    },
+    {
+      "name": "controllers",
+      "role": "Route handlers & business logic",
+      "aiNotes": "Controllers should only contain business logic, not database schema or route definitions."
+    },
+    {
+      "name": "middleware",
+      "role": "Authentication, role validation, error handling",
+      "aiNotes": "No business logic here; only request processing, auth, and validation."
+    },
+    {
+      "name": "models",
+      "role": "Sequelize data models",
+      "files": ["User.js", "WorkOrder.js", "Job.js", "LineItem.js", "Appointment.js", "Notification.js"],
+      "aiNotes": "Define schema only; do not include business logic."
+    },
+    {
+      "name": "public",
+      "role": "Static assets",
+      "subfolders": ["css", "js"],
+      "aiNotes": "Only place static resources here; do not include dynamic scripts."
+    },
+    {
+      "name": "routes",
+      "role": "Express API route definitions",
+      "aiNotes": "Map endpoints to controllers only; no heavy logic."
+    },
+    {
+      "name": "services",
+      "role": "Reusable helper modules, API calls, WebSocket helpers",
+      "aiNotes": "Use for shared logic and integrations; can be used by controllers."
+    },
+    {
+      "name": "views",
+      "role": "Server-rendered HTML templates",
+      "aiNotes": "Do not mix with API logic; no SPA frameworks."
+    }
+  ],
+  "files": [
+    {
+      "name": ".env",
+      "role": "Environment variables (secret keys)",
+      "aiNotes": "Must never be checked into source control with live secrets."
+    },
+    {
+      "name": "server.js",
+      "role": "Application entry point; sets up Express server and Socket.io",
+      "aiNotes": "Contains startup logic only."
+    },
+    {
+      "name": "package.json",
+      "role": "Dependencies and scripts",
+      "aiNotes": "Use scripts for running, testing, and building."
+    },
+    {
+      "name": "package-lock.json",
+      "role": "Locked dependency versions",
+      "aiNotes": "Do not edit manually; ensures reproducible builds."
+    }
+  ],
+  "rules": {
+    "architecture": [
+      "Controllers only contain business logic",
+      "Models only define database schema",
+      "Routes only map endpoints to controllers",
+      "Middleware only handles auth, validation, error handling",
+      "Views are server-rendered templates, no SPA frameworks",
+      "Real-time notifications must use Socket.io",
+      "Do not introduce new frameworks without approval",
+      "Follow naming conventions in existing files",
+      "Maintain current folder structure",
+      "Do not modify core models without updating migrations"
+    ],
+    "aiGuidelines": [
+      "Use README + folder structure as source of truth",
+      "Keep controller, model, and route responsibilities strict",
+      "Prioritize data integrity when generating/modifying code",
+      "Read existing files before suggesting changes",
+      "Respect naming conventions and coding patterns"
+    ]
+  }
+}
